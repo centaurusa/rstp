@@ -32,7 +32,7 @@ class App extends Component {
       });
       console.log('res', response.data);
     } catch (err) {
-      console.log('err', err);
+      console.log('err', err.response);
     }
   }
 

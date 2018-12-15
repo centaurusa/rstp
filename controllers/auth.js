@@ -17,10 +17,10 @@ exports.signUp = async (req, res, next) => {
 
     try {
         const existingUser = await User.findOne({ email });
-        
+
         if (existingUser) {
             const error = new Error('User with the email already exists');
-            error.statusCode = 401;
+            error.statusCode = 409;
             throw error;
         }
 
@@ -46,42 +46,41 @@ exports.signUp = async (req, res, next) => {
 
 };
 
-exports.login = (req, res, next) => {
+exports.login = async (req, res, next) => {
     const { email, password } = req.body;
     let loaderUser;
-    User.findOne({ email })
-        .then(user => {
-            if (!user) {
-                const error = new Error('A user with this email was not found.');
-                error.statusCode = 401;
-                throw error;
-            }
-            loaderUser = user;
-            return bcrypt.compare(password, user.password);
-        })
-        .then(isEqual => {
-            if (!isEqual) {
-                const error = new Error('Wrong password or email!');
-                error.statusCode = 401;
-                throw error;
-            }
-            // generating web token
-            const token = jwt.sign({ 
-                    email: loaderUser.email, 
-                    userId: loaderUser._id.toString()
-                }, 'zxasqw12!fg', { expiresIn: '1h' }
-            );
-            res.status(200).json({
-                token,
-                userId: loaderUser._id.toString()
-            });
+    try { 
+        const user = await User.findOne({ email });
 
-        })
-        .catch(err => {
-            if (!err.statusCode) {
-                err.statusCode = 500;
-            }
-            next(err);
+        if (!user) {
+            const error = new Error('A user with this email was not found.');
+            error.statusCode = 401;
+            throw error;
+        }
+        loaderUser = user;
+        const isEqual = await bcrypt.compare(password, user.password);
+
+        if (!isEqual) {
+            const error = new Error('Wrong password or email!');
+            error.statusCode = 401;
+            throw error;
+        }
+        // generating web token
+        const token = jwt.sign({ 
+            email: loaderUser.email, 
+            userId: loaderUser._id.toString() }, 
+            'zxasqw12!fg', { expiresIn: '1h' }
+        );
+        res.status(200).json({
+            token,
+            userId: loaderUser._id.toString()
         });
+
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
 
 };
