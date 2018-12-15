@@ -1,0 +1,39 @@
+.AuthModal {
+    background: #ebf0f6;
+    padding: 30px 40px 60px 40px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 400px;
+    border-radius: 2px;
+}
+
+.AuthModal h4 {
+    margin-bottom: 30px;
+}
+
+.AuthModal input {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+    height: 40px;
+}
+
+
+.AuthModal button[type=submit] {
+    margin-top: 30px;
+    width: 100%;
+    background-color: #364e68;
+    color: #fff;
+    height: 40px;
+    cursor: pointer;
+}
+
+.AuthModal button[type=submit]:hover {
+    opacity: 0.8;
+}
+
+.AuthModal .ErrMessage {
+    color: #db2d43;
+}
