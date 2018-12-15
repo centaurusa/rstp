@@ -17,7 +17,6 @@ class Auth extends Component {
   }
 
   onSubmit(value, { setSubmitting }) {
-    console.log(value);
     this.props.handleAuthSubmit(value, this.props.type);
     setSubmitting(false);
   }

@@ -8,12 +8,14 @@ import './Header.css';
 const Header = (props) => (
     <header>
         <Link to={'/'} style={{ textDecoration: 'none', color: '#f06c64' }} ><h1>{props.title}</h1></Link>
-        <Auth />
+        <Auth loggedIn={props.loggedIn} email={props.email} />
     </header>
 )
 
 Header.propTypes = {
-    title: PropTypes.string
+    title: PropTypes.string,
+    loggedIn: PropTypes.bool,
+    email: PropTypes.string
 };
 
 export default Header;

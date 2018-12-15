@@ -15,7 +15,7 @@ header h1 {
 }
 
 
-header .auth span {
+header .Auth span:not(.Email) {
     transition: color .3s ease-in-out;
     margin-left: 10px;
     font-size: 20px;
@@ -25,7 +25,11 @@ header .active {
     color: #fff !important;
 }
 
-header .auth span:hover {
+header .Auth span:hover {
+    color: #fff;
+}
+
+header .Auth h5 .Email {
     color: #fff;
 }
 

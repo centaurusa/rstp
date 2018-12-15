@@ -73,6 +73,7 @@ exports.login = async (req, res, next) => {
         );
         res.status(200).json({
             token,
+            email: loaderUser.email,
             userId: loaderUser._id.toString()
         });
 
