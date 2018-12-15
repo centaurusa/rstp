@@ -33,4 +33,11 @@ header .Auth h5 .Email {
     color: #fff;
 }
 
+Header .Auth .LogOut {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: greenyellow;
+}
+
 

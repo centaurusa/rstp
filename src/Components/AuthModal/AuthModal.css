@@ -36,7 +36,8 @@
     opacity: 0.8;
 }
 
-.AuthModal .ErrMessage {
+.AuthModal .ErrMessage,
+.AuthModal .CustomMessage {
     color: #db2d43;
 }
 

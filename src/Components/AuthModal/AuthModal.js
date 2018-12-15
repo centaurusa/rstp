@@ -13,6 +13,7 @@ class Auth extends Component {
 
   static propTypes = {
     type: PropTypes.string,
+    message: PropTypes.string,
     handleAuthSubmit: PropTypes.func
   }
 
@@ -42,7 +43,7 @@ class Auth extends Component {
 
   render() {
     const title = this.props.type === 'login' ? 'Log in' : 'Sign Up';
-
+    const { message } = this.props;
     return (
       <div className={'AuthModal'}>
         <h4>{title}</h4>
@@ -67,9 +68,10 @@ class Auth extends Component {
             </Form>
         )}
         </Formik>
+        <div className={'CustomMessage'}>{ message }</div>
       </div>
     )
   }
 }
 
-export default  Auth;
+export default Auth;

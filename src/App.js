@@ -14,6 +14,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.handleAuthSubmit = this.handleAuthSubmit.bind(this);
+    this.handleLogOut = this.handleLogOut.bind(this);
+
     if (!this.user) {
       this.user = {
         loggedIn: false,
@@ -24,8 +26,10 @@ class App extends Component {
       this.user = JSON.parse(`${this.user}`);
       this.user.loggedIn = true;
     }
+
     this.state = {
       isLoading: false,
+      message: '',
       user: this.user
     };
   }
@@ -40,12 +44,14 @@ class App extends Component {
         password: values.password
       });
       console.log('res', response.data);
+
       if (type === 'login') {
         const user = JSON.stringify({
           'token': response.data.token,
           'userId': response.data.userId,
           'email': response.data.email
         });
+
         localStorage.setItem('user', user);
         this.setState({
           isLoading: false,
@@ -60,7 +66,19 @@ class App extends Component {
       }
     } catch (err) {
       console.log('err', err.response);
+      this.setState({ message: err.response.data.message })
     }
+  }
+
+  handleLogOut() {
+    localStorage.removeItem('user');
+    this.setState({
+      user: {
+        loggedIn: false,
+        email: '',
+        streams: []
+      }
+    })
   }
 
   componentDidMount() {
@@ -76,13 +94,16 @@ class App extends Component {
   }
 
   render() {
-    const { isLoading } = this.state;
+    const { isLoading, message } = this.state;
     const { loggedIn, email } = this.state.user;
 
     return (
       <div className="App">
         { isLoading && <Loader />}
-        <Header title={'RTSP streams'} loggedIn={loggedIn} email={email} />
+        <Header title={'RTSP streams'} 
+                loggedIn={loggedIn} 
+                email={email} 
+                handleLogOut={this.handleLogOut}/>
         {/* <Switch>
           <Route path="/details/:id" render={(props) => <FullDetailsCard results={this.state.results} {...props} />} />
           <Route path="/" exact component={() => <Results results={this.state.results} />} />
@@ -90,10 +111,10 @@ class App extends Component {
         <Switch>
           <Route path={'/'} exact render={() => loggedIn ? <HomePage /> : <Redirect to='/login' />} />
           <Route path={'/login'} exact render={() => !loggedIn ? 
-            <AuthModal handleAuthSubmit={this.handleAuthSubmit} type={'login'}/> : 
+            <AuthModal handleAuthSubmit={this.handleAuthSubmit} message={message} type={'login'} /> : 
             <Redirect to={'/'} />} />
           <Route path={'/signup'} exact render={() => !loggedIn ? 
-            <AuthModal handleAuthSubmit={this.handleAuthSubmit} type={'signup'}/> : 
+            <AuthModal handleAuthSubmit={this.handleAuthSubmit} message={message} type={'signup'} /> : 
             <Redirect to={'/'} />} />
         </Switch>
       </div>
