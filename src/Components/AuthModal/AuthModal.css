@@ -7,6 +7,8 @@
     transform: translate(-50%, -50%);
     min-width: 400px;
     border-radius: 2px;
+    transition: all .3s ease-in-out;
+    animation: fadein .3s ease-in-out;
 }
 
 .AuthModal h4 {
@@ -36,4 +38,9 @@
 
 .AuthModal .ErrMessage {
     color: #db2d43;
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1;}
 }

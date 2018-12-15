@@ -5,35 +5,45 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 exports.signUp = async (req, res, next) => {
-    const errs = validationResult(req);
+    // const errs = validationResult(req);
 
-    if (!errs.isEmpty()) {
-        const error = new Error('Validation failed.')
-        error.statusCode = 422;
-        error.data = errs.array();
-        throw error;
-    }
+    // if (!errs.isEmpty()) {
+    //     const error = new Error('Validation failed.')
+    //     error.statusCode = 422;
+    //     error.data = errs.array();
+    //     throw error;
+    // }
     const { email, password } = req.body;
-    bcrypt.hash(password, 12)
-        .then(hashedPassword => {
+
+    try {
+        const existingUser = await User.findOne({ email });
+        
+        if (existingUser) {
+            const error = new Error('User with the email already exists');
+            error.statusCode = 401;
+            throw error;
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 12);
+
+        if (hashedPassword) {
             const user = new User({
                 email: email,
                 password: hashedPassword
             });
-            return user.save();
-        })
-        .then(result => {
+            const result = await user.save();
             res.status(201).json({
                 message: 'User created',
                 userId: result._id
             });
-        })
-        .catch(err => {
-            if (!err.statusCode) {
-                err.statusCode = 500;
-            }
-            next(err);
-        })
+        }
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+
 };
 
 exports.login = (req, res, next) => {
@@ -51,7 +61,7 @@ exports.login = (req, res, next) => {
         })
         .then(isEqual => {
             if (!isEqual) {
-                const error = new Error('Wrong password!');
+                const error = new Error('Wrong password or email!');
                 error.statusCode = 401;
                 throw error;
             }

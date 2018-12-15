@@ -14,7 +14,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/steams', streamsRoutes);
+app.use('/streams', streamsRoutes);
 app.use('/auth', authRoutes);
 
 app.use((error, req, res, next) => {

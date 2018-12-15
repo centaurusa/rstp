@@ -12,9 +12,9 @@ class Auth extends Component {
   }
 
   static propTypes = {
-    title: PropTypes.string,
+    type: PropTypes.string,
     handleAuthSubmit: PropTypes.func
-  };
+  }
 
   onSubmit(value, { setSubmitting }) {
     console.log(value);

@@ -6,7 +6,7 @@ const authController = require('../controllers/auth');
 
 const router = express.Router();
 
-router.put('/signup', [
+router.post('/signup', [
     body('email')
         .isEmail()
         .withMessage('The email is not valid.')

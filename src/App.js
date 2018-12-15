@@ -8,8 +8,7 @@ import './App.css';
 
 class App extends Component {
 
-  userId = localStorage.getItem('userId');
-
+  // userId = localStorage.getItem('userId');
 
   constructor(props) {
     super(props);
@@ -18,13 +17,23 @@ class App extends Component {
 
   state = {
     isLoading: false,
-    results: [],
-    user: '',
-    streams: []
+    user: {
+      loggedIn: false,
+      streams: []
+    },
+    
   };
 
-  handleAuthSubmit(value, type) {
-    debugger;
+  handleAuthSubmit = async (values, type) => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/${type}`, {
+        email: values.email,
+        password: values.password
+      });
+      console.log('res', response.data);
+    } catch (err) {
+      console.log('err', err);
+    }
   }
 
   componentDidMount() {
@@ -50,8 +59,8 @@ class App extends Component {
           <Route path="/details/:id" render={(props) => <FullDetailsCard results={this.state.results} {...props} />} />
           <Route path="/" exact component={() => <Results results={this.state.results} />} />
         </Switch> */}
-        <Route path={'/login'} render={() => <AuthModal handleAuthSubmit={this.handleAuthSubmit} type="login"/>} />
-        <Route path={'/signup'} render={() => <AuthModal handleAuthSubmit={this.handleAuthSubmit} type="signup"/>} />
+        <Route path={'/login'} render={() => <AuthModal handleAuthSubmit={this.handleAuthSubmit} type={'login'}/>} />
+        <Route path={'/signup'} render={() => <AuthModal handleAuthSubmit={this.handleAuthSubmit} type={'signup'}/>} />
       </div>
     );
   }
