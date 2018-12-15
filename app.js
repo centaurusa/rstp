@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 // routes
-const userRoutes = require('./routes/user');
+const streamsRoutes = require('./routes/streams');
 const authRoutes = require('./routes/auth');
 
 
@@ -14,7 +14,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/user', userRoutes);
+app.use('/steams', streamsRoutes);
 app.use('/auth', authRoutes);
 
 app.use((error, req, res, next) => {
