@@ -5,6 +5,8 @@ const router = express.Router();
 const userController = require('../controllers/streams');
 const isAuth = require('../middleware/is-auth');
 
-router.get('/', isAuth, userController.getUserStreams);
+router.put('/', isAuth, userController.addStream);
+
+router.get('/', isAuth, userController.getStreams);
 
 module.exports = router;

@@ -4,6 +4,7 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Loader from './Components/Loader/Loader';
 import AuthModal from './Components/AuthModal/AuthModal';
 import HomePage from './Components/HomePage/HomePage';
+import Streams from './Components/Streams/Streams';
 import axios from 'axios';
 import './App.css';
 
@@ -58,6 +59,8 @@ class App extends Component {
           isLoading: false,
           user: {
             loggedIn: true,
+            userId: response.data.userId,
+            token: response.data.token,
             email: response.data.email
           }
         });
@@ -75,7 +78,7 @@ class App extends Component {
   }
   /**
    * @description
-   * Handling Log out
+   * Handle Logging out
    */
   handleLogOut() {
     localStorage.removeItem('user');
@@ -89,25 +92,54 @@ class App extends Component {
     })
   }
 
-  handleAddStream() {
-    
+  /**
+   * 
+   * @param {e, value}
+   */
+  handleAddStream = async (e, value) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/streams`, {
+        email: this.state.user.email,
+        stream: value
+      }, { headers: { Authorization: "Bearer " + this.state.user.token }});
+
+      this.setState({
+        user: {
+          ...this.state.user,
+          streams: response.data.streams
+        }
+      });
+      // redirect to grid and display page
+      this.props.history.push("/streams");
+
+    } catch (err) {
+      console.log('handler adding stream err', err.response.data);
+    }
   }
 
-  componentDidMount() {
-    // if (this.token) {
-    //   axios.get(`${process.env.REACT_APP_BASE_URL}/user`, { headers: { userId: this.userId }})
-    //   .then(res => {
-    //     this.setState({
-    //       queries: res.data.user.queries
-    //     });
-    //     localStorage.setItem('userId', res.data.user._id);
-    //   });
-    // }
+  async componentDidMount() {
+
+    if (this.state.user.loggedIn) {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/streams`, 
+        { headers: { Authorization: "Bearer " + this.state.user.token }});
+        
+        if (response && response.data) {
+          debugger;
+        }
+      } catch (err) {
+        console.log(err);
+        this.handleLogOut();
+      }
+
+    }
   }
 
   render() {
     const { isLoading, message } = this.state;
-    const { loggedIn, email } = this.state.user;
+    const { loggedIn, email, streams } = this.state.user;
 
     return (
       <div className="App">
@@ -117,13 +149,16 @@ class App extends Component {
                 email={email} 
                 handleLogOut={this.handleLogOut}/>
         <Switch>
-          <Route path={'/'} exact render={() => loggedIn ? <HomePage /> : <Redirect to='/login' />} />
+          <Route path={'/'} exact render={() => loggedIn ? <HomePage handleAddStream={this.handleAddStream} /> : <Redirect to='/login' />} />
           <Route path={'/login'} exact render={() => !loggedIn ? 
             <AuthModal handleAuthSubmit={this.handleAuthSubmit} message={message} type={'login'} /> : 
             <Redirect to={'/'} />} />
           <Route path={'/signup'} exact render={() => !loggedIn ? 
             <AuthModal handleAuthSubmit={this.handleAuthSubmit} message={message} type={'signup'} /> : 
             <Redirect to={'/'} />} />
+          <Route path={'/streams'} exact render={() => loggedIn ? 
+            <Streams streams={streams}/> : 
+            <Redirect to={'/login'} />} />
         </Switch>
       </div>
     );

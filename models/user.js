@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const streamSchema = new Schema({
     url: { type: String, required: true }
-}, { _id: false });
+});
 
 const userSchema = new Schema({
     email: {

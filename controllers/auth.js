@@ -49,6 +49,7 @@ exports.signUp = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     const { email, password } = req.body;
     let loaderUser;
+    
     try { 
         const user = await User.findOne({ email });
 
