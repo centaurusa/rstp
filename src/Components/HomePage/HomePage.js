@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-// import { Formik, Form, Field, ErrorMessage } from 'formik';
-
 import './HomePage.css';
 
  class HomePage extends Component {
@@ -22,7 +20,7 @@ import './HomePage.css';
 
     onInputChange(e) {
         const valid = this.validateInputUrl(e.target.value);
-        console.log(valid);
+        
         this.setState({
             [e.target.name]: e.target.value,
             valid: valid
@@ -36,7 +34,6 @@ import './HomePage.css';
     validateInputUrl(value) {
         const regex = /rtsp:\/\/[0-9./A-Za-z:_]*/;
         return regex.test(value);
-        // return value.startsWith('rtsp://');
     }
 
     render() {
