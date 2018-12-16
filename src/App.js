@@ -45,6 +45,7 @@ class App extends Component {
       });
       console.log('res', response.data);
 
+      // login
       if (type === 'login') {
         const user = JSON.stringify({
           'token': response.data.token,
@@ -62,23 +63,34 @@ class App extends Component {
         });
         this.props.history.push("/");
       } else {
-
+        // Sign Up
+        this.setState({
+          message: 'Done! You can now sign in.'
+        })
       }
     } catch (err) {
       console.log('err', err.response);
       this.setState({ message: err.response.data.message })
     }
   }
-
+  /**
+   * @description
+   * Handling Log out
+   */
   handleLogOut() {
     localStorage.removeItem('user');
     this.setState({
+      message: '',
       user: {
         loggedIn: false,
         email: '',
         streams: []
       }
     })
+  }
+
+  handleAddStream() {
+    
   }
 
   componentDidMount() {
@@ -104,10 +116,6 @@ class App extends Component {
                 loggedIn={loggedIn} 
                 email={email} 
                 handleLogOut={this.handleLogOut}/>
-        {/* <Switch>
-          <Route path="/details/:id" render={(props) => <FullDetailsCard results={this.state.results} {...props} />} />
-          <Route path="/" exact component={() => <Results results={this.state.results} />} />
-        </Switch> */}
         <Switch>
           <Route path={'/'} exact render={() => loggedIn ? <HomePage /> : <Redirect to='/login' />} />
           <Route path={'/login'} exact render={() => !loggedIn ? 

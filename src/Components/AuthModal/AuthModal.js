@@ -17,9 +17,10 @@ class Auth extends Component {
     handleAuthSubmit: PropTypes.func
   }
 
-  onSubmit(value, { setSubmitting }) {
+  onSubmit(value, { setSubmitting, resetForm }) {
     this.props.handleAuthSubmit(value, this.props.type);
     setSubmitting(false);
+    resetForm();
   }
 
   /**
@@ -44,6 +45,7 @@ class Auth extends Component {
   render() {
     const title = this.props.type === 'login' ? 'Log in' : 'Sign Up';
     const { message } = this.props;
+
     return (
       <div className={'AuthModal'}>
         <h4>{title}</h4>
@@ -58,7 +60,7 @@ class Auth extends Component {
           //     }, 400);
           // }}
         >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, resetForm }) => (
             <Form>
               <Field type="email" name="email" placeholder="Email"/>
               <ErrorMessage className={'ErrMessage'} name="email" component="div" />

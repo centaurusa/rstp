@@ -1,0 +1,30 @@
+.AddStream {
+    padding: 40px 60px;
+    background: #b5edba;
+}
+
+.AddStream form {
+    width: 60%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.AddStream input {
+    width: 60%;
+    height: 40px;
+}
+
+.AddStream button[type=submit] {
+    margin-left: 20px;
+    border: none;
+    color: #fff;
+    background: #f06f32;
+    height: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
+    cursor: pointer;
+}
+.AddStream button[type=submit]:disabled {
+    cursor: initial;
+    opacity: 0.6;
+}
