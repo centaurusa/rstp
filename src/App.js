@@ -4,7 +4,7 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Loader from './Components/Loader/Loader';
 import AuthModal from './Components/AuthModal/AuthModal';
 import HomePage from './Components/HomePage/HomePage';
-import Streams from './Components/Streams/Streams';
+import StreamsGrid from './Components/StreamsGrid/StreamsGrid';
 import axios from 'axios';
 import './App.css';
 
@@ -30,7 +30,10 @@ class App extends Component {
 
     this.state = {
       isLoading: false,
-      message: '',
+      message: {
+        text: '',
+        type: ''
+      },
       user: this.user
     };
   }
@@ -44,7 +47,6 @@ class App extends Component {
         email: values.email,
         password: values.password
       });
-      console.log('res', response.data);
 
       // login
       if (type === 'login') {
@@ -64,16 +66,27 @@ class App extends Component {
             email: response.data.email
           }
         });
+
+        // get users streams
+        this.getStreams();
+
         this.props.history.push("/");
       } else {
         // Sign Up
         this.setState({
-          message: 'Done! You can now sign in.'
+          message: {
+            text: 'Done! You can now sign in.',
+            type: 'success'
+          }
         })
       }
     } catch (err) {
       console.log('err', err.response);
-      this.setState({ message: err.response.data.message })
+      this.setState({ 
+        message: {
+          text: err.response.data.message,
+          typer: 'error'
+      }})
     }
   }
   /**
@@ -115,25 +128,35 @@ class App extends Component {
       this.props.history.push("/streams");
 
     } catch (err) {
-      console.log('handler adding stream err', err.response.data);
+      console.log(err);
     }
+  }
+
+   async getStreams() {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/streams`, 
+      { headers: { Authorization: "Bearer " + this.state.user.token, _id: this.state.user.userId }});
+      
+      if (response && response.data) {
+        this.setState({
+          ...this.state,
+          user: {
+            ...this.state.user,
+            streams: response.data.streams
+          }
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      this.handleLogOut();
+    }
+
   }
 
   async componentDidMount() {
 
     if (this.state.user.loggedIn) {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/streams`, 
-        { headers: { Authorization: "Bearer " + this.state.user.token }});
-        
-        if (response && response.data) {
-          debugger;
-        }
-      } catch (err) {
-        console.log(err);
-        this.handleLogOut();
-      }
-
+      this.getStreams();
     }
   }
 
@@ -157,7 +180,7 @@ class App extends Component {
             <AuthModal handleAuthSubmit={this.handleAuthSubmit} message={message} type={'signup'} /> : 
             <Redirect to={'/'} />} />
           <Route path={'/streams'} exact render={() => loggedIn ? 
-            <Streams streams={streams}/> : 
+            <StreamsGrid streams={streams}/> : 
             <Redirect to={'/login'} />} />
         </Switch>
       </div>

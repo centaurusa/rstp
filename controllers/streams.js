@@ -2,6 +2,7 @@ const User = require('../models/user');
 
 exports.addStream = async (req, res, next) => {
     const { email, stream } = req.body;
+
     try {
         const user = await User.findOne({ email });
         if (user) {
@@ -19,15 +20,19 @@ exports.addStream = async (req, res, next) => {
             });
         }
     } catch (err) {
-        console.log('add stream err', err);
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 
 };
 
 exports.getStreams = async (req, res, next) => {
-    const { email } = req.headers;
+    const { _id } = req.headers;
+    
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findById({ _id }, { streams: { $slice: -8 } });
         if (user) {
             res.status(200).json({
                 streams: user.streams
@@ -38,6 +43,9 @@ exports.getStreams = async (req, res, next) => {
             })
         }
     } catch (err) {
-        console.log('get streams err', err);
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
     }
 };

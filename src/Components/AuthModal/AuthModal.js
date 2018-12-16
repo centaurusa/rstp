@@ -13,7 +13,10 @@ class Auth extends Component {
 
   static propTypes = {
     type: PropTypes.string,
-    message: PropTypes.string,
+    message: PropTypes.shape({
+      text: PropTypes.string,
+      type: PropTypes.string
+    }),
     handleAuthSubmit: PropTypes.func
   }
 
@@ -53,12 +56,6 @@ class Auth extends Component {
           initialValues={{ email: '', password: '' }}
           validate={this.validateForm}
           onSubmit={this.onSubmit}
-          // onSubmit={(values, { setSubmitting }) => {
-          //     setTimeout(() => {
-          //     alert(JSON.stringify(values, null, 2));
-          //     setSubmitting(false);
-          //     }, 400);
-          // }}
         >
         {({ isSubmitting, resetForm }) => (
             <Form>
@@ -70,7 +67,7 @@ class Auth extends Component {
             </Form>
         )}
         </Formik>
-        <div className={'CustomMessage'}>{ message }</div>
+        <div className={`CustomMessage ${message.type}`}>{ message.text }</div>
       </div>
     )
   }

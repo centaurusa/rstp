@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import VideoStream from './VideoStream/VideoStream';
+import './StreamsGrid.css';
 
-class Streams extends Component {
+class StreamsGrid extends Component {
 
     static defaultProps = {
         streams: []
@@ -31,7 +32,7 @@ class Streams extends Component {
 
 
         return (
-            <div className={'container'}>
+            <div className={'container StreamsGrid'}>
                 <div className={'row'}>
                     { streamLinks }
                 </div>
@@ -40,4 +41,4 @@ class Streams extends Component {
     }
 }
 
-export default Streams;
+export default StreamsGrid;

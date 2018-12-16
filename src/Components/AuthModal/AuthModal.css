@@ -37,8 +37,11 @@
 }
 
 .AuthModal .ErrMessage,
-.AuthModal .CustomMessage {
+.AuthModal .CustomMessage.error {
     color: #db2d43;
+}
+.AuthModal .CustomMessage.success {
+    color: #45eba5;
 }
 
 @keyframes fadein {
